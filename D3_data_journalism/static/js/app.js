@@ -52,24 +52,15 @@ d3.csv("static/data/data.csv").then((incomingData) => {
         .domain([0, d3.max(incomingData, d => d.poverty)])
         .range([svgHeight, 0]);
 
-    var yScale2 = d3.scaleLinear()
-        .domain([0, d3.max(incomingData, d => d.income)])
-        .range([svgHeight, 0]);
-
     var bottomAxis = d3.axisBottom(xScale);
     var leftAxis = d3.axisLeft(yScale);
-    var rightAxis = d3.axisRight(yScale2);
 
     chartGroup.append("g")
         .attr("transform", `translate(0, ${svgHeight})`)
         .call(bottomAxis);
 
     chartGroup.append("g")
-        .call(leftAxis)
-
-    chartGroup.append("g")
-        .attr("transform", `translate(${svgWidth}, 0)`)
-        .call(rightAxis)
+        .call(leftAxis);
 
     // Create circles for the scatter
     var circlesGroup = chartGroup.selectAll("circle")
@@ -78,10 +69,39 @@ d3.csv("static/data/data.csv").then((incomingData) => {
         .append("circle")
         .attr("cx", d => xScale(d.healthcare))
         .attr("cy", d => yScale(d.poverty))
-        .attr("r", 10)
+        .attr("r", 17)
         .attr("fill", "pink")
         .attr("opacity", ".5")
-        .attr("stroke", "black");
+        .attr("stroke", "black")
+        
+    var circleText = chartGroup.selectAll("cirlce")
+        .data(incomingData)
+        .enter()
+        .append("text")
+        .attr("x", d => xScale(d.healthcare))
+        .attr("y", d => yScale(d.poverty))
+        .attr("dy", ".35em")
+        .attr("text-anchor", "middle")
+        .text(d => d.abbr);
+
+    var yAxisText = chartGroup.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left - 5)
+        .attr("x", 0 - (svgHeight / 2))
+        .attr("dy", "1em")
+        .text("Poverty");
+
+    var xAxisText = chartGroup.append("text")
+        .attr("y", 0 + (svgHeight + margin.bottom/2))
+        .attr("x", 0 + (width / 2) - 50)
+        .attr("dy", "1em")
+        .text("Healthcare");
+
+    
+        
+
     
 
+}).catch(function(error) {
+    console.log(error)
 });
