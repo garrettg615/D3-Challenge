@@ -29,4 +29,16 @@
     margin: 0;
     font-size: 16px;
   }
-  
+
+.tooltip {
+  position: absolute;
+  width:150px;
+  height:95px;
+  background-color:darkseagreen;
+  opacity: 0.5;
+  font: 10px;
+  padding-left: 13px;
+  padding-top: 5px;
+  border: 2px;
+  border-radius: 10px;
+}
