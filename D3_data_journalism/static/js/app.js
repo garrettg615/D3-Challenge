@@ -23,6 +23,7 @@ var chartGroup = svg.append("g")
 
 // Initialize chosenXAxis
 var chosenXAxis = "healthcare";
+var chosenYAxis = "age";
 
 // Create Function to update x-axis values
 function xLinearScale(incomingData, chosenXAxis) {
@@ -34,7 +35,6 @@ function xLinearScale(incomingData, chosenXAxis) {
     return xScale;
 };
 
-var chosenYAxis = "age"
 
 function yLinearScale(incomingData, chosenYAxis) {
     yScale = d3.scaleLinear()
@@ -97,26 +97,31 @@ function renderCircleText(circleText, chosenXAxis, chosenYAxis) {
 };
 
 // Functions to update tooltip/text box for circles
-function updateToolTip(circlesGroup, chosenXAxis) {
+function updateToolTip(circlesGroup, chosenXAxis, chosenYAxis) {
 
     var xLabel;
     var yLabel = "Age: ";
 
-    if (chosenXAxis === "Poverty") {
-        xLabel = "Income: $";
-    } else if (chosenXAxis === "Obesity") {
+    if (chosenXAxis === "poverty") {
+        xLabel = "Poverty";       
+    } else if (chosenXAxis === "obesity") {
         xLabel = "Obesity: ";
-    } else if (chosenXAxis === "Smoking") {
+    } else if (chosenXAxis === "smokes") {
         xLabel = "Smoking: ";
     } else {
         xLabel = "Healthcare: ";
     };
 
+    if (chosenYAxis !== "age") {
+        yLabel = "Income: $";
+    };
+    
+
     var toolTip = d3.tip()
         .attr("class", "tooltip")  
         .offset([113,89])      
         .html(function(d) {
-            return (`${d.state}<br><br>${xLabel}${d[chosenXAxis]}<br>${yLabel}${d.poverty}`);
+            return (`${d.state}<br><br>${xLabel}${d[chosenXAxis]}<br>${yLabel}${d[chosenYAxis]}`);
         });
 
     circlesGroup.call(toolTip);
@@ -194,7 +199,7 @@ d3.csv("static/data/data.csv").then((incomingData) => {
         .attr("text-anchor", "middle")
         .text(d => d.abbr);
 
-    var circlesGroup = updateToolTip(circlesGroup, chosenXAxis);
+    var circlesGroup = updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
     
     var xLabelGroup = chartGroup.append("g");
     var yLabelGroup = chartGroup.append("g");
@@ -262,7 +267,7 @@ d3.csv("static/data/data.csv").then((incomingData) => {
             
             if (value !== chosenXAxis) {
                 chosenXAxis = value;
-                // console.log(chosenXAxis);
+                console.log(chosenXAxis);
 
                 // define new xScale for chosenXAxis
                 xScale = xLinearScale(incomingData, chosenXAxis);
@@ -277,7 +282,7 @@ d3.csv("static/data/data.csv").then((incomingData) => {
                 renderCircleText(circleText, chosenXAxis, chosenYAxis);
 
                 // Update ToolTip
-                updateToolTip(circlesGroup, chosenXAxis);
+                updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
 
 
             };
@@ -299,6 +304,9 @@ d3.csv("static/data/data.csv").then((incomingData) => {
                 renderCircleText(circleText, chosenXAxis, chosenYAxis);
 
                 renderYAxis(yAxis, yScale);
+
+                // Update ToolTip
+                updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
 
 
             };
