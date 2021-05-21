@@ -1,13 +1,13 @@
 console.log("this is where is begins")
 
-var svgHeight = 600;
-var svgWidth = 750;
+var svgHeight = 750;
+var svgWidth = 900;
 
 var margin = {
-    top: 40,
-    right: 40,
+    top: 100,
+    right: 100,
     bottom: 100,
-    left: 60
+    left: 100
 };
 
 var height = svgHeight-margin.top-margin.bottom;
@@ -201,39 +201,44 @@ d3.csv("static/data/data.csv").then((incomingData) => {
 
     var circlesGroup = updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
     
-    var xLabelGroup = chartGroup.append("g");
+    var xLabelGroup = chartGroup.append("g")
+        .attr("class", "xaxis-labels");
     var yLabelGroup = chartGroup.append("g");
     
     // X-Axis Label
     // Create Healthcare Label (x-axis)
     var healthcareLabel = xLabelGroup.append("text")
-        .attr("y", 0 + (height + (margin.bottom/2) - 20))
-        .attr("x", 0 + (svgWidth / 2) - 50)  
+        .attr("y", 0 + (height + (margin.bottom/2) - 5))
+        .attr("x", 0 + (svgWidth / 2) - 400)  
         .attr("dy", "1em")
+        .classed("axis-text", true)
         .attr("value", "healthcare")
         .text("Healthcare");
 
     // Create Poverty Label (x-axis)
     var povertyLabel = xLabelGroup.append("text")
         .attr("y", 0 + (height + (margin.bottom/2) - 5))
-        .attr("x", 0 + (svgWidth / 2) - 50)  
+        .attr("x", 0 + (svgWidth / 2) - 200)  
         .attr("dy", "1em")
+        .classed("axis-text", true)
         .attr("value", "poverty")
         .text("Poverty");
 
     // Create Obesity Label (x-axis)
     var obesityLabel = xLabelGroup.append("text")
-        .attr("y", 0 + (height + (margin.bottom/2) - 20))
-        .attr("x", 0 + (svgWidth / 2) + 80)  
+        .attr("y", 0 + (height + (margin.bottom/2) - 5))
+        .attr("x", 0 + (svgWidth / 2)-25)  
         .attr("dy", "1em")
+        .classed("axis-text", true)
         .attr("value", "obesity")
         .text("Obesity");
 
     // Create Smoking Label (x-axis)
     var smokingLabel = xLabelGroup.append("text")
         .attr("y", 0 + (height + (margin.bottom/2) - 5))
-        .attr("x", 0 + (svgWidth / 2) + 80)  
+        .attr("x", 0 + (svgWidth / 2) + 150)  
         .attr("dy", "1em")
+        .classed("axis-text", true)
         .attr("value", "smokes")
         .text("Smoking");
     
@@ -283,8 +288,6 @@ d3.csv("static/data/data.csv").then((incomingData) => {
 
                 // Update ToolTip
                 updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
-
-
             };
 
             
@@ -297,24 +300,27 @@ d3.csv("static/data/data.csv").then((incomingData) => {
             if (yValue !== chosenYAxis) {
                 chosenYAxis = yValue;
                 console.log(yValue)
+                
+                // define new xScale for chosenXAxis
                 yScale = yLinearScale(incomingData, chosenYAxis);
 
+                // Use function above to update circles on graph
                 updateCirclesY(circlesGroup, yScale, chosenYAxis);
-
+                
+                // Render circle text with transition
                 renderCircleText(circleText, chosenXAxis, chosenYAxis);
-
+                
+                // render y-axis with transition
                 renderYAxis(yAxis, yScale);
 
                 // Update ToolTip
                 updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
-
-
             };
         });
 
-
-    
-        
+        if (chosenXAxis === "healthcare") {
+            healthcareLabel.classed("axis-text:active", true)
+        }
 
     
 
