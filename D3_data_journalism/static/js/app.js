@@ -97,7 +97,7 @@ function renderCircleText(circleText, chosenXAxis, chosenYAxis) {
 };
 
 // Functions to update tooltip/text box for circles
-function updateToolTip(circlesGroup, chosenXAxis, chosenYAxis) {
+function updateToolTip(circlesGroup, circleText, chosenXAxis, chosenYAxis) {
 
     var xLabel;
     var yLabel = "Age: ";
@@ -125,6 +125,7 @@ function updateToolTip(circlesGroup, chosenXAxis, chosenYAxis) {
         });
 
     circlesGroup.call(toolTip);
+    circleText.call(toolTip);
 
     circlesGroup
         .on("mouseover", function(d) {
@@ -134,16 +135,24 @@ function updateToolTip(circlesGroup, chosenXAxis, chosenYAxis) {
             toolTip.hide(d);
         });
 
-    return circlesGroup;
+        circleText
+        .on("mouseover", function(d) {
+            toolTip.show(d, this);
+        })
+        .on("mouseout", function(d){
+            toolTip.hide(d);
+        });
+
+    return circlesGroup, circleText;
 }; 
 
 function updateTitle(chartTitle, chosenXAxis, chosenYAxis) {
 
-var xLabel;
-var ylabel = "Age";
+var xLabel = "Healthcare";
+var yLabel = "Age";
 
 if (chosenXAxis === "poverty") {
-    xLabel = "Poverty";       
+    xLabel = "Poverty";  
 } else if (chosenXAxis === "obesity") {
     xLabel = "Obesity";
 } else if (chosenXAxis === "smokes") {
@@ -152,15 +161,16 @@ if (chosenXAxis === "poverty") {
     xLabel = "Healthcare";
 };
 
-if (chosenYAxis !== "age") {
+if (chosenYAxis === "income") {
     yLabel = "Income";
-};
+}; 
 
-chartTitle.selectAll("text")
+
+chartTitle
     .attr("y", -40)
     .attr("x", width/2 -150)
     .attr("class", "title-text")
-    .text(`${xLabel} vs. ${ylabel}`);
+    .text(`${xLabel} vs. ${yLabel}`);
 }
 
 
@@ -225,12 +235,13 @@ d3.csv("static/data/data.csv").then((incomingData) => {
         .text(d => d.abbr);
 
     // call tool tip function to update graph
-    var circlesGroup = updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
+    updateToolTip(circlesGroup, circleText, chosenXAxis, chosenYAxis);
     
     // create Chart title group
-    var chartTitle = chartGroup.append("g");
+    var chartTitle = chartGroup.append("g")
+        .append("text");
     
-    // call chart title function
+    // // call chart title function
     updateTitle(chartTitle, chosenXAxis, chosenYAxis);
     
     // define group to create x-axis label
@@ -319,7 +330,7 @@ d3.csv("static/data/data.csv").then((incomingData) => {
                 renderCircleText(circleText, chosenXAxis, chosenYAxis);
 
                 // Update ToolTip
-                updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
+                updateToolTip(circlesGroup, circleText, chosenXAxis, chosenYAxis);
 
                 // call chart title function
                 updateTitle(chartTitle, chosenXAxis, chosenYAxis);
@@ -349,18 +360,13 @@ d3.csv("static/data/data.csv").then((incomingData) => {
                 renderYAxis(yAxis, yScale);
 
                 // Update ToolTip
-                updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
+                updateToolTip(circlesGroup, circleText, chosenXAxis, chosenYAxis);
                 
                 // call chart title function
                 updateTitle(chartTitle, chosenXAxis, chosenYAxis);
 
             };
         });
-
-        if (chosenXAxis === "healthcare") {
-            healthcareLabel.classed("axis-text:active", true)
-        }
-
     
 
 }).catch(function(error) {
