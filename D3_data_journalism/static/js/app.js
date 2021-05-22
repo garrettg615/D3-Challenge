@@ -5,9 +5,9 @@ var svgWidth = 900;
 
 var margin = {
     top: 100,
-    right: 100,
+    right: 30,
     bottom: 100,
-    left: 100
+    left: 150
 };
 
 var height = svgHeight-margin.top-margin.bottom;
@@ -137,7 +137,31 @@ function updateToolTip(circlesGroup, chosenXAxis, chosenYAxis) {
     return circlesGroup;
 }; 
 
+function updateTitle(chartTitle, chosenXAxis, chosenYAxis) {
 
+var xLabel;
+var ylabel = "Age";
+
+if (chosenXAxis === "poverty") {
+    xLabel = "Poverty";       
+} else if (chosenXAxis === "obesity") {
+    xLabel = "Obesity";
+} else if (chosenXAxis === "smokes") {
+    xLabel = "Smoking";
+} else {
+    xLabel = "Healthcare";
+};
+
+if (chosenYAxis !== "age") {
+    yLabel = "Income";
+};
+
+chartTitle.selectAll("text")
+    .attr("y", -40)
+    .attr("x", width/2 -150)
+    .attr("class", "title-text")
+    .text(`${xLabel} vs. ${ylabel}`);
+}
 
 
 d3.csv("static/data/data.csv").then((incomingData) => {
@@ -188,7 +212,8 @@ d3.csv("static/data/data.csv").then((incomingData) => {
         .attr("fill", "pink")
         .attr("opacity", ".5")
         .attr("stroke", "black")
-        
+    
+    // Display State Abbreviation inside circle
     var circleText = chartGroup.selectAll("cirlce")
         .data(incomingData)
         .enter()
@@ -199,10 +224,19 @@ d3.csv("static/data/data.csv").then((incomingData) => {
         .attr("text-anchor", "middle")
         .text(d => d.abbr);
 
+    // call tool tip function to update graph
     var circlesGroup = updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
     
-    var xLabelGroup = chartGroup.append("g")
-        .attr("class", "xaxis-labels");
+    // create Chart title group
+    var chartTitle = chartGroup.append("g");
+    
+    // call chart title function
+    updateTitle(chartTitle, chosenXAxis, chosenYAxis);
+    
+    // define group to create x-axis label
+    var xLabelGroup = chartGroup.append("g");
+    
+    // define group to create x-axis label
     var yLabelGroup = chartGroup.append("g");
     
     // X-Axis Label
@@ -245,25 +279,23 @@ d3.csv("static/data/data.csv").then((incomingData) => {
     // Y-Axis Label
     // create Age Label (y-axis)
     var ageLabel = yLabelGroup.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left + 1)
-        .attr("x", 0 - (height / 2))
+        // .attr("transform", "rotate(-90)")
+        .attr("y", height/2)
+        .attr("x", -130)
         .attr("dy", "1em")
+        .classed("axis-text", true)
         .attr("value", "age")
         .text("Age");
     
     // Create Income Label (y-axis)
     var incomeLabel = yLabelGroup.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left + 20)
-        .attr("x", 0 - (height / 2))  
+        .attr("y", height/2 + 50)
+        .attr("x", -130)  
         .attr("dy", "1em")
+        .classed("axis-text", true)
         .attr("value", "income")
         .text("Income");
 
-
-    
-    
 
     // Create Event Listener for X Labels
     xLabelGroup.selectAll("text")
@@ -288,6 +320,9 @@ d3.csv("static/data/data.csv").then((incomingData) => {
 
                 // Update ToolTip
                 updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
+
+                // call chart title function
+                updateTitle(chartTitle, chosenXAxis, chosenYAxis);
             };
 
             
@@ -315,6 +350,10 @@ d3.csv("static/data/data.csv").then((incomingData) => {
 
                 // Update ToolTip
                 updateToolTip(circlesGroup, chosenXAxis, chosenYAxis);
+                
+                // call chart title function
+                updateTitle(chartTitle, chosenXAxis, chosenYAxis);
+
             };
         });
 

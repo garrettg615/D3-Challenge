@@ -12,7 +12,7 @@ html {
 body {
     /* Padding bottom by footer height */
     padding-bottom: 80px;
-    background-color:lightsteelblue;
+    background-color:gainsboro;
 }
 
 .row { 
@@ -23,13 +23,13 @@ h1 {
     text-align: center;
     font-family: Georgia, 'Times New Roman', Times, serif;
     font-size: 50px;
+    padding-bottom: 50px;
 }
 
 .article {
-   background-color: steelblue;
+   background-color:lightslategray;
    padding: 20px;
-   margin-bottom: 10px;
-   padding-bottom: 10px;
+   
 }
 
 .article h2 {
@@ -42,6 +42,7 @@ h1 {
 .article p {
     font-family:Arial, Helvetica, sans-serif;
     font-size: 20px;
+    margin-bottom: 50px;
 }
 
 hr {
@@ -67,6 +68,11 @@ hr {
     
 }
 
+#scatter { 
+  background-color: lightsteelblue;
+  margin-bottom: 30px;
+}
+
 .tooltip {
   position: absolute;
   width:150px;
@@ -84,6 +90,7 @@ hr {
   font-size: 20px;
   font-weight: bold;
   cursor: pointer;
+  fill:darkmagenta;
   
 }
 
@@ -96,3 +103,12 @@ hr {
   stroke-width: 3;
 }
 
+.tick {
+  font-size: 15px;
+  font-weight: bold;
+  stroke-width: 2px;
+}
+
+.title-text {
+  font-size: 40px;
+}
